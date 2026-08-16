@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: axion-telemetry-query-service
+  namespace: axion-app
+spec:
+  replicas: 2
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+
+
+  selector:
+    matchLabels:
+      app: axion-telemetry-query-service
+
+  template:
+    metadata:
+      labels:
+        app: axion-telemetry-query-service
+
+    spec:
+      containers:
+      - name: axion-telemetry-query-service
+        image: acrtodoappjay.azurecr.io/axion-telemetry-query-service:v1
+        ports:
+        - containerPort: 8000
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 6
+          periodSeconds: 10
+        
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 7
+          periodSeconds: 10
+
+        volumeMounts:
+        - name: axion-ui-storage
+          mountPath: /data
+      
+      volumes:
+      - name: axion-ui-storage
+        persistentVolumeClaim:
+          claimName: axion-ui-pvc

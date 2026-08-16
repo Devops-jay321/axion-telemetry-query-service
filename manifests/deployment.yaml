@@ -28,26 +28,6 @@ spec:
         image: acrtodoappjay.azurecr.io/axion-telemetry-query-service:v1
         ports:
         - containerPort: 8000
-
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 6
-          periodSeconds: 10
-        
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 7
-          periodSeconds: 10
-
-        volumeMounts:
-        - name: axion-ui-storage
-          mountPath: /data
-      
-      volumes:
-      - name: axion-ui-storage
-        persistentVolumeClaim:
-          claimName: axion-ui-pvc
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://jaydeepc1985:Oneday%40321@axion-ingestion-service:5432/axion-db"

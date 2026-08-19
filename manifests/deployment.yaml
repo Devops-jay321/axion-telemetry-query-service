@@ -25,9 +25,23 @@ spec:
     spec:
       containers:
       - name: axion-telemetry-query-service
-        image: acrtodoappjay.azurecr.io/axion-telemetry-query-service:v1
+        image: acrtodoappjay.azurecr.io/axion-telemetry-query-service:v2
         ports:
         - containerPort: 8000
+        volumeMounts:
+        - name: secrets-store-query
+          mountPath: "/mnt/secrets-store"
+          readOnly: true
         env:
-        - name: DATABASE_URL
-          value: "postgresql://jaydeepc1985:Oneday%40321@axion-ingestion-service:5432/axion-db"
+        - name: DATABASE--URL
+          valueFrom:
+            secretKeyRef:
+              name: azure-secret
+              key: db-url
+      volumes:
+      - name: secrets-store-query
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "azure-kv"

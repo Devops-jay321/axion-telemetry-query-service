@@ -35,11 +35,17 @@ app = FastAPI(
 # Enable CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # For development, allow all
+    allow_origins=["http://axion-ui.jaydeep.shop"], # For development, allow all
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/health")
+async def health_check():
+    return {
+        "status": "healthy"
+    }
 
 @app.get("/dashboard/summary")
 async def get_summary():

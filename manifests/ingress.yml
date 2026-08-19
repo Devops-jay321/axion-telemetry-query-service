@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: axion-telemetry-ingress
+  namespace: axion-app
+  annotations:
+    appgw.ingress.kubernetes.io/health-probe-path: /health
+    appgw.ingress.kubernetes.io/health-probe-status-codes: "200-399"
+spec:
+  ingressClassName: azure-application-gateway
+  rules:
+  - host: axion-telemetry.jaydeep.shop
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: axion-telemetry-query-service
+            port: 
+              number: 80
